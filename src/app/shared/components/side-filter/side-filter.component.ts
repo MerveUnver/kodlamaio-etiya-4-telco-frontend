@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CustomersService } from 'src/app/features/customers/services/customer/customers.service';
 
 @Component({
@@ -19,15 +19,15 @@ export class SideFilterComponent implements OnInit {
   ngOnInit(): void {
     this.createSearchForm();
   }
-
+ 
   createSearchForm(): void {
     this.searchForm = this.formBuilder.group({
       id: [''],
       customerId: [''],
       accountNumber: [''],
       gsmNumber: [''],
-      firstName: [''],
-      lastname: [''],
+      firstName: ['',Validators.pattern('^[A-Za-z0-9_]{0,50}$')],
+      lastname: ['',Validators.pattern('^[A-Za-z0-9_]{0,50}$')],
       orderNumber: [''],
     });
   }

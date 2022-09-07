@@ -30,6 +30,7 @@
                     type="text"
                     etiyaInput="dark"
                     formControlName="firstName"
+                    maxlength="50"
                   />
                 </div>
               </div>
@@ -48,6 +49,7 @@
                     type="text"
                     etiyaInput="dark"
                     formControlName="middleName"
+                    maxlength="50"
                   />
                 </div>
               </div>
@@ -66,6 +68,7 @@
                     type="text"
                     etiyaInput="dark"
                     formControlName="lastName"
+                    maxlength="50"
                   />
                 </div>
               </div>
@@ -100,7 +103,8 @@
                 >
                   <div class="e-dropdown">
                     <select name="gender" id="gender" formControlName="gender">
-                      <option selected value="Female">Female</option>
+                      <option selected disabled hidden value="">Choose</option>
+                      <option value="Female">Female</option>
                       <option value="Male">Male</option>
                     </select>
                   </div>
@@ -157,6 +161,7 @@
                     type="text"
                     etiyaInput="dark"
                     formControlName="nationalityId"
+                    maxlength="11"
                   />
                 </div>
               </div>

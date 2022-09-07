@@ -30,20 +30,21 @@ export class CreateCustomerComponent implements OnInit {
   ngOnInit(): void {
     this.createCustomerModel$.subscribe((state) => {
       this.customer = state;
-      this.createFormUpdateCustomer();
+      this.createFormAddCustomer();
     });
   }
 
-  createFormUpdateCustomer() {
+  createFormAddCustomer() {
     this.profileForm = this.formBuilder.group({
-      firstName: [this.customer.firstName, Validators.required],
+      firstName: [this.customer.firstName, Validators.required,Validators.pattern('^[A-Za-z0-9_]{0,50}$')],
       middleName: [this.customer.middleName],
       lastName: [this.customer.lastName, Validators.required],
       birthDate: [this.customer.birthDate, Validators.required],
-      gender: [this.customer.gender ?? 'Female', Validators.required],
+      gender: [this.customer.gender ?? '', Validators.required],
       fatherName: [this.customer.fatherName],
       motherName: [this.customer.motherName],
-      nationalityId: [this.customer.nationalityId, Validators.required],
+      nationalityId: [this.customer.nationalityId,[Validators.required, Validators.minLength(11)],
+      ],
     });
   }
   goNextPage() {
