@@ -2,6 +2,8 @@ import {
   addAddressInfo,
   setContactMediumInfo,
   setDemographicInfo,
+  updateAddressInfo,
+  removeAddressInfo,
 } from '../../../../shared/store/customers/customerToAdd/customerToAdd.actions';
 import { Customer } from './../../models/customer';
 import { map, Observable, Subject } from 'rxjs';
@@ -104,8 +106,23 @@ export class CustomersService {
     this.store.dispatch(setDemographicInfo(props));
   }
 
-  addAddressInfoToStore(props: Address) {
-    this.store.dispatch(addAddressInfo(props));
+  addAddressInfoToStore(props: Address, customers: Customer) {
+    const newAddress: Address = {
+      ...props,
+      id: (customers.addresses?.length || 0) + 1,
+    };
+    this.store.dispatch(addAddressInfo(newAddress));
+  }
+
+  updateAddressInfoToStore(props: Address) {
+    const newAddress: Address = {
+      ...props,
+    };
+    this.store.dispatch(updateAddressInfo(newAddress));
+  }
+
+  removeAdressToStore(address: Address) {
+    this.store.dispatch(removeAddressInfo(address));
   }
 
   setContactMediumInfoToStore(props: ContactMedium) {
@@ -227,6 +244,23 @@ export class CustomersService {
       ],
     };
     console.log(newCustomer);
+    return this.httpClient.put<Customer>(
+      `${this.apiControllerUrl}/${customer.id}`,
+      newCustomer
+    );
+  }
+  removeAddress(
+    addressToDelete: Address,
+    customer: Customer
+  ): Observable<Customer> {
+    const newCustomer: Customer = {
+      ...customer,
+    };
+    const newAddress = customer.addresses?.filter(
+      (address) => address.id != addressToDelete.id
+    );
+    newCustomer.addresses = newAddress;
+
     return this.httpClient.put<Customer>(
       `${this.apiControllerUrl}/${customer.id}`,
       newCustomer

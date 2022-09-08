@@ -13,6 +13,8 @@ import { CustomersService } from '../../services/customer/customers.service';
 export class AddContactMediumComponent implements OnInit {
   contactForm!: FormGroup;
   customer!: Customer;
+  isShow:Boolean=false
+  displayBasic!: boolean;
   constructor(
     private customersService: CustomersService,
     private router: Router,
@@ -46,6 +48,16 @@ export class AddContactMediumComponent implements OnInit {
   saveContactMediumToStore() {
     this.customersService.setContactMediumInfoToStore(this.contactForm.value);
   }
+  Save() {
+    if (this.contactForm.valid) {
+      this.isShow = false
+      this.saveCustomer()
+    }
+    else{
+      this.isShow = true
+      this.displayBasic = true;
+    }
+  }
 
   saveCustomer() {
     this.saveContactMediumToStore();
@@ -69,4 +81,15 @@ export class AddContactMediumComponent implements OnInit {
       },
     });
   }
+  
+  isNumber(event: any): boolean {
+    console.log(event);
+    const pattern = /[0-9]/;
+    const char = String.fromCharCode(event.which ? event.which : event.keyCode);
+    if (pattern.test(char)) return true;
+
+    event.preventDefault();
+    return false;
+  }
+
 }

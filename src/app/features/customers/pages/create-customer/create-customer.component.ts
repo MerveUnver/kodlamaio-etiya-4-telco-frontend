@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { map, Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import {
@@ -19,10 +20,13 @@ export class CreateCustomerComponent implements OnInit {
   profileForm!: FormGroup;
   createCustomerModel$!: Observable<Customer>;
   customer!: Customer;
+  isShow:Boolean=false
+
   constructor(
     private formBuilder: FormBuilder,
     private customerService: CustomersService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) {
     this.createCustomerModel$ = this.customerService.customerToAddModel$;
   }
@@ -36,19 +40,62 @@ export class CreateCustomerComponent implements OnInit {
 
   createFormAddCustomer() {
     this.profileForm = this.formBuilder.group({
-      firstName: [this.customer.firstName, Validators.required,Validators.pattern('^[A-Za-z0-9_]{0,50}$')],
-      middleName: [this.customer.middleName],
-      lastName: [this.customer.lastName, Validators.required],
-      birthDate: [this.customer.birthDate, Validators.required],
-      gender: [this.customer.gender ?? '', Validators.required],
-      fatherName: [this.customer.fatherName],
-      motherName: [this.customer.motherName],
-      nationalityId: [this.customer.nationalityId,[Validators.required, Validators.minLength(11)],
-      ],
+      firstName: ['', Validators.required],
+      middleName: [''],
+      lastName: ['', Validators.required],
+      birthDate: ['', Validators.required],
+      gender: ['', Validators.required],
+      fatherName: [''],
+      motherName: [''],
+      nationalityId: ['',
+        [Validators.pattern('^[0-9]{11}$'), Validators.required]],
     });
   }
   goNextPage() {
-    this.customerService.setDemographicInfoToStore(this.profileForm.value);
-    this.router.navigateByUrl('/dashboard/customers/list-address-info');
+      if (this.profileForm.valid) {
+      this.isShow = false
+      this.getCustomers(this.profileForm.value.nationalityId);
+    }
+    else{
+      this.isShow = true
+    }
+  }
+  isNumber(event: any): boolean {
+    console.log(event);
+    const pattern = /[0-9]/;
+    const char = String.fromCharCode(event.which ? event.which : event.keyCode);
+    if (pattern.test(char)) return true;
+
+    event.preventDefault();
+    return false;
+  }
+  getCustomers(id: number) {
+    this.customerService.getList().subscribe((response) => {
+      let matchCustomer = response.find((item) => {
+        return item.nationalityId == id;
+      });
+      if (matchCustomer) {
+        this.messageService.add({
+          detail: 'This user already exist',
+          severity: 'info',
+          summary: 'Warning',
+          key: 'etiya-custom',
+          sticky: true,
+        });
+      } else {
+        this.customerService.setDemographicInfoToStore(this.profileForm.value);
+        this.router.navigateByUrl('/dashboard/customers/list-address-info');
+      }
+    });
+  }
+  isValid(event: any): boolean {
+    console.log(event);
+    const pattern = /[0-9]/;
+    const char = String.fromCharCode(event.which ? event.which : event.keyCode);
+    if (pattern.test(char)) return true;
+
+    event.preventDefault();
+    return false;
   }
 }
+
