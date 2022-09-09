@@ -33,7 +33,7 @@
                       <th class="col-2">Second Name</th>
                       <th class="col-2">Last Name</th>
                       <th class="col-2">Role</th>
-                      <th class="col-2">ID Number</th>
+                      <th class="col-2">Nationality Id</th>
                     </tr>
                   </thead>
                   <tbody class="table-body">
@@ -48,7 +48,7 @@
                       <tr *ngFor="let customer of filteredCustomerList">
                         <th>
                           <a (click)="getCustomerId(customer)">{{
-                            customer.id
+                            customer.customerId
                           }}</a>
                         </th>
                         <td>{{ customer.firstName }}</td>
@@ -56,7 +56,7 @@
                         <td>{{ customer.lastName }}</td>
                         <td>{{ customer.role }}</td>
                         <!---Backend Simülasyonu, customerid gelecektir-->
-                        <td>{{ customer.id }}</td>
+                        <td>{{ customer.nationalityId }}</td>
                       </tr>
                     </ng-template>
                     <ng-template #otherState>
@@ -71,7 +71,7 @@
                         <td>{{ customer.lastName }}</td>
                         <td>{{ customer.role }}</td>
                         <!---Backend Simülasyonu, customerid gelecektir-->
-                        <td>{{ customer.id }}</td>
+                        <td>{{ customer.nationalityId }}</td>
                       </tr>
                     </ng-template>
                   </tbody>

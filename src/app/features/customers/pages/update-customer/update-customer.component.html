@@ -31,7 +31,7 @@
             <div class="row d-flex justify-space-between align-items-center">
               <div class="col-6">
                 <div class="form-group">
-                  <label class="col-5" for="first-name">First Name:</label>
+                  <label class="col-5" for="first-name">First Name* :</label>
                   <input
                     class="col-7"
                     type="text"
@@ -48,19 +48,20 @@
               </div>
               <div class="col-6 form-group">
                 <div class="form-group">
-                  <label class="col-5" for="middleName">Middle Name:</label>
+                  <label class="col-5" for="middleName">Middle Name :</label>
                   <input
                     class="col-7"
                     type="text "
                     etiyaInput="dark"
                     formControlName="middleName"
+                    maxlength="50"
                   />
                 </div>
               </div>
 
               <div class="col-6">
                 <div class="form-group">
-                  <label class="col-5" for="lastName">Last Name:</label>
+                  <label class="col-5" for="lastName">Last Name* :</label>
                   <input
                     class="col-7"
                     type="text "
@@ -76,12 +77,14 @@
               </div>
               <div class="col-6">
                 <div class="form-group">
-                  <label class="col-5" for="birthDate">Birth Date:</label>
+                  <label class="col-5" for="birthDate">Birth Date* :</label>
                   <input
                     class="col-7"
-                    type="Date"
+                    type="date"
                     etiyaInput="dark"
                     formControlName="birthDate"
+                    [max]="today | date: 'yyyy-MM-dd'"
+                    (blur)="onDateChange($event)"
                     [ngClass]="{
                       'invalid-input':
                         isShow &&
@@ -89,12 +92,26 @@
                     }"
                   />
                 </div>
+                <small
+                  *ngIf="futureDate"
+                  class="p-error block ng-invalid ng-dirty"
+                  style="color: red; margin-left: 220px; margin-top: -20px"
+                >
+                  Please enter a valid date of birth
+                </small>
+                <small
+                  *ngIf="under18"
+                  class="p-error block ng-invalid ng-dirty"
+                  style="color: red; margin-left: 220px; margin-top: -20px"
+                >
+                  The customer cannot be under the age of 18.
+                </small>
               </div>
               <div class="col-6">
                 <div
                   class="form-group d-flex justify-content-lg-start align-items-center"
                 >
-                  <label class="col-5" for="gender">Gender:</label>
+                  <label class="col-5" for="gender">Gender* :</label>
                   <div class="e-dropdown col-7 p-0">
                     <select
                       name="gender"
@@ -107,7 +124,7 @@
                       }"
                     >
                       <option selected value="Female">Female</option>
-                      <option value="Erkek">Erkek</option>
+                      <option value="Erkek">Male</option>
                     </select>
                   </div>
                 </div>
@@ -121,6 +138,7 @@
                     type="text"
                     etiyaInput="dark"
                     formControlName="fatherName"
+                    maxlength="50"
                   />
                 </div>
               </div>
@@ -132,15 +150,18 @@
                     type="text"
                     etiyaInput="dark"
                     formControlName="motherName"
+                    maxlength="50"
                   />
                 </div>
               </div>
               <div class="col-6">
                 <div class="form-group">
-                  <label class="col-5" for="nationalId">Nationality ID:</label>
+                  <label class="col-5" for="nationalId"
+                    >Nationality ID* :</label
+                  >
                   <input
                     class="col-7"
-                    type="number"
+                    type="text"
                     etiyaInput="dark"
                     formControlName="nationalityId"
                     onKeyPress="if(this.value.length==11) return false;"
@@ -152,6 +173,23 @@
                     }"
                   />
                 </div>
+                <small
+                  *ngIf="
+                    isShow &&
+                    updateCustomerForm.controls['nationalityId'].errors
+                  "
+                  class="p-error block ng-invalid ng-dirty"
+                  style="color: red; margin-left: 218px; margin-top: -20px"
+                >
+                  compulsory fields must be filled.
+                </small>
+                <small
+                  *ngIf="nationalityId"
+                  class="p-error block ng-invalid ng-dirty"
+                  style="color: red; margin-left: 218px; margin-top: -20px"
+                >
+                  A customer with this nationality ID already exists.
+                </small>
               </div>
             </div>
           </div>
@@ -165,7 +203,7 @@
               <div class="col-6 d-flex justify-content-lg-end">
                 <button
                   etiyaButton="clear"
-                  (click)="UpdateCustomer()"
+                  (click)="update()"
                   [disabled]="
                     updateCustomerForm.value.firstName == customer.firstName &&
                     updateCustomerForm.value.lastName == customer.lastName &&
@@ -199,7 +237,7 @@
             class="p-error block ng-invalid ng-dirty"
             style="color: red; margin-left: 350px; margin-top: 5px"
           >
-            Requirements field can not be left blank
+            This field is required
           </small>
         </form>
       </div>

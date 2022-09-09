@@ -9,69 +9,165 @@
 
   <div class="e-input-container">
     <form [formGroup]="searchForm">
-      <label class="e-label mt-4">ID NUMBER
-        <i class="icon-info-sign" data-toggle="tooltip" title="Must be 7 characters" id='example' >
-          <img src="../../../../assets/img/info.png" width="20" height="20">
+      <label class="e-label mt-4"
+        >NATIONAL ID
+        <i
+          class="icon-info-sign"
+          data-toggle="tooltip"
+          title="Must be 7 characters"
+          id="example"
+        >
+          <img src="../../../../assets/img/info.png" width="20" height="20" />
         </i>
       </label>
-      <input type="number"  etiyaInput="dark" formControlName="id" min="0" oninput="validity.valid||(value='');" onKeyPress="if(this.value.length==7) return false;"  
-      #id/>
+      <input
+        max="99999999999"
+        min="10000000000"
+        (keypress)="isValid($event)"
+        type="text"
+        etiyaInput="dark"
+        formControlName="nationalityId"
+        onKeyPress="if(this.value.length==11) return false;"
+        #nationalityId
+      />
 
-      <label class="e-label">CUSTOMER ID 
-        <i class="icon-info-sign" data-toggle="tooltip" title="Must be 7 characters" id='example' >
-          <img src="../../../../assets/img/info.png" width="20" height="20">
+      <label class="e-label"
+        >CUSTOMER ID
+        <i
+          class="icon-info-sign"
+          data-toggle="tooltip"
+          title="Must be maximum 7 characters"
+          id="example"
+        >
+          <img src="../../../../assets/img/info.png" width="20" height="20" />
         </i>
       </label>
-      <input type="number" etiyaInput="dark" formControlName="customerId" min="0" oninput="validity.valid||(value='');" onKeyPress="if(this.value.length==7) return false;" 
-      #customerId/>
+      <input
+        type="number"
+        etiyaInput="dark"
+        formControlName="customerId"
+        min="0"
+        oninput="validity.valid||(value='');"
+        onKeyPress="if(this.value.length==7) return false;"
+        #customerId
+      />
 
-      <label class="e-label">ACCOUNT NUMBER
-        <i class="icon-info-sign" data-toggle="tooltip" title="Positive number only" id='example' >
-          <img src="../../../../assets/img/info.png" width="20" height="20">
+      <label class="e-label"
+        >ACCOUNT NUMBER
+        <i
+          class="icon-info-sign"
+          data-toggle="tooltip"
+          title="Positive number only"
+          id="example"
+        >
+          <img src="../../../../assets/img/info.png" width="20" height="20" />
         </i>
       </label>
-      <input type="number" etiyaInput="dark" formControlName="accountNumber" min="0" oninput="validity.valid||(value='');" #accountNumber/>
+      <input
+        type="number"
+        etiyaInput="dark"
+        formControlName="accountNumber"
+        min="0"
+        oninput="validity.valid||(value='');"
+        #accountNumber
+      />
 
-      <label class="e-label">GSM NUMBER
-        <i class="icon-info-sign" data-toggle="tooltip" title="Must be 11 characters" id='example' >
-          <img src="../../../../assets/img/info.png" width="20" height="20">
+      <label class="e-label"
+        >GSM NUMBER
+        <i
+          class="icon-info-sign"
+          data-toggle="tooltip"
+          title="Must be 11 characters"
+          id="example"
+        >
+          <img src="../../../../assets/img/info.png" width="20" height="20" />
         </i>
       </label>
-      <input type="number" etiyaInput="dark" formControlName="gsmNumber" min="0" oninput="validity.valid||(value='');" onKeyPress="if(this.value.length==11) return false;" #gsmNumber/>
+      <input
+        max="9999999999"
+        min="1"
+        placeholder="+90"
+        (keypress)="isValid($event)"
+        onKeyPress="if(this.value.length==13) return false;"
+        type="text"
+        etiyaInput="dark"
+        formControlName="gsmNumber"
+        #gsmNumber
+      />
 
-      <label class="e-label">FIRST NAME
-        <i class="icon-info-sign" data-toggle="tooltip" title="Not just numbers and special characters" id='example' >
-          <img src="../../../../assets/img/info.png" width="20" height="20">
+      <label class="e-label"
+        >FIRST NAME
+        <i
+          class="icon-info-sign"
+          data-toggle="tooltip"
+          title="Not just numbers and special characters"
+          id="example"
+        >
+          <img src="../../../../assets/img/info.png" width="20" height="20" />
         </i>
       </label>
-      <input type="text" etiyaInput="dark" formControlName="firstName" #firstName />
+      <input
+        type="text"
+        etiyaInput="dark"
+        formControlName="firstName"
+        #firstName
+      />
 
-      <label class="e-label">LAST NAME
-        <i class="icon-info-sign" data-toggle="tooltip" title="Not just numbers and special characters" id='example' >
-          <img src="../../../../assets/img/info.png" width="20" height="20">
+      <label class="e-label"
+        >LAST NAME
+        <i
+          class="icon-info-sign"
+          data-toggle="tooltip"
+          title="Not just numbers and special characters"
+          id="example"
+        >
+          <img src="../../../../assets/img/info.png" width="20" height="20" />
         </i>
       </label>
-      <input type="text" etiyaInput="dark" formControlName="lastname"  #lastName/>
+      <input
+        type="text"
+        etiyaInput="dark"
+        formControlName="lastname"
+        #lastName
+      />
 
-      <label class="e-label">ORDER NUMBER
-        <i class="icon-info-sign" data-toggle="tooltip" title="Positive number only" id='example' >
-          <img src="../../../../assets/img/info.png" width="20" height="20">
+      <label class="e-label"
+        >ORDER NUMBER
+        <i
+          class="icon-info-sign"
+          data-toggle="tooltip"
+          title="Positive number only"
+          id="example"
+        >
+          <img src="../../../../assets/img/info.png" width="20" height="20" />
         </i>
       </label>
-      <input type="text" etiyaInput="dark" formControlName="orderNumber" min="0" oninput="validity.valid||(value='');" #orderNumber/>
+      <input
+        type="text"
+        etiyaInput="dark"
+        formControlName="orderNumber"
+        min="0"
+        oninput="validity.valid||(value='');"
+        #orderNumber
+      />
     </form>
   </div>
   <div class="e-btn-container">
     <button type="button" etiyaButton="clear" (click)="clear()">CLEAR</button>
-    <button type="button" etiyaButton="search" (click)="search()" [disabled]="
-    id.value.length === 0 &&
-    customerId.value.length === 0 &&
-    accountNumber.value.length === 0 &&
-    gsmNumber.value.length === 0 &&
-    firstName.value.length === 0 &&
-    lastName.value.length === 0 &&
-    orderNumber.value.length === 0
-  ">
+    <button
+      type="button"
+      etiyaButton="search"
+      (click)="search()"
+      [disabled]="
+        nationalityId.value.length === 0 &&
+        customerId.value.length === 0 &&
+        accountNumber.value.length === 0 &&
+        gsmNumber.value.length === 0 &&
+        firstName.value.length === 0 &&
+        lastName.value.length === 0 &&
+        orderNumber.value.length === 0
+      "
+    >
       SEARCH<img
         etiyaButton="img-search"
         src="../assets/img/search-btn-logo.png"

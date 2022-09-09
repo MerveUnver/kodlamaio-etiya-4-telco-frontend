@@ -43,9 +43,10 @@ export class CustomersService {
     this.httpClient.get<Customer[]>(this.apiControllerUrl).subscribe({
       next: (response) => {
         let filteredCustomers = response;
-        if (searchCustomer.id) {
+        if (searchCustomer.nationalityId) {
           filteredCustomers = filteredCustomers.filter(
-            (item) => item.id == searchCustomer.id
+            (item) => item.nationalityId?.toString() ==
+            searchCustomer.nationalityId.toString()
           );
         }
         if (searchCustomer.customerId) {
@@ -72,14 +73,14 @@ export class CustomersService {
           filteredCustomers = filteredCustomers.filter((item) =>
             item
               .firstName!.toLowerCase()
-              .includes(searchCustomer.firstName.toLowerCase())
+              .startsWith(searchCustomer.firstName.toLowerCase())
           );
         }
         if (searchCustomer.lastname) {
           filteredCustomers = filteredCustomers.filter((item) =>
             item
               .lastName!.toLowerCase()
-              .includes(searchCustomer.lastname.toLowerCase())
+              .startsWith(searchCustomer.lastname.toLowerCase())
           );
         }
         if (searchCustomer.orderNumber) {

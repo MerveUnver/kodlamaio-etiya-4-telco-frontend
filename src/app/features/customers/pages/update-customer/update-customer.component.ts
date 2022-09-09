@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +16,10 @@ export class UpdateCustomerComponent implements OnInit {
   selectedCustomerId!: number;
   customer!: Customer;
   isShow:Boolean=false
+  under18: Boolean = false;
+  futureDate: Boolean = false;
+  today: Date = new Date();
+  nationalityId: Boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -27,20 +32,51 @@ export class UpdateCustomerComponent implements OnInit {
   ngOnInit(): void {
     this.getCustomerById();
   }
-
   createFormUpdateCustomer() {
+    console.log(this.customer.birthDate);
+    let bDate = new Date();
+    if (this.customer.birthDate) {
+      bDate = new Date(this.customer.birthDate);
+    }
     this.updateCustomerForm = this.formBuilder.group({
       firstName: [this.customer.firstName, Validators.required],
       middleName: [this.customer.middleName],
       lastName: [this.customer.lastName, Validators.required],
-      birthDate: [this.customer.birthDate, Validators.required],
+      birthDate: [
+        formatDate(new Date(bDate), 'yyyy-MM-dd', 'en'),
+        Validators.required,
+      ],
       gender: [this.customer.gender, Validators.required],
       fatherName: [this.customer.fatherName],
       motherName: [this.customer.motherName],
-      nationalityId: [this.customer.nationalityId, Validators.required],
+      nationalityId: [
+        this.customer.nationalityId,
+        [Validators.pattern('^[0-9]{11}$'), Validators.required],
+      ],
     });
   }
-
+  checkInvalid() {
+    if (this.updateCustomerForm.invalid) {
+      this.isShow = true;
+      return;
+    }
+    let date = new Date(this.updateCustomerForm.get('birthDate')?.value);
+    let age = this.today.getFullYear() - date.getFullYear();
+    if (age < 18) {
+      this.under18 = true;
+      return;
+    } else {
+      this.under18 = false;
+    }
+    if (
+      this.updateCustomerForm.value.nationalityId ===
+      this.customer.nationalityId
+    ) {
+      this.updateCustomer();
+    } else {
+      this.checkTcNum(this.updateCustomerForm.value.nationalityId);
+    }
+  }
   getCustomerById() {
     this.activatedRoute.params.subscribe((params) => {
       if (params['id']) this.selectedCustomerId = params['id'];
@@ -57,34 +93,44 @@ export class UpdateCustomerComponent implements OnInit {
     }
   }
 
-  UpdateCustomer() {
-    if (this.updateCustomerForm.valid) {
-      this.isShow = false
-      this.update();
-    }
-    else{
-      this.isShow = true
-    }
-  }
-
-  update() {
-    const customer: Customer = Object.assign(
-      { id: this.customer.id },
-      this.updateCustomerForm.value
-    );
-    this.customerService.update(customer, this.customer).subscribe(() => {
-      setTimeout(() => {
+  updateCustomer() {
+    if (this.updateCustomerForm.invalid) {
+      this.isShow = true;
+    } else {
+      this.isShow = false;
+      const customer: Customer = Object.assign(
+        { id: this.customer.id },
+        this.updateCustomerForm.value
+      );
+      this.customerService.update(customer, this.customer).subscribe(() => {
         this.router.navigateByUrl(
           `/dashboard/customers/customer-info/${customer.id}`
         );
-        // this.messageService.add({
-        //   detail: 'Sucsessfully updated',
-        //   severity: 'success',
-        //   summary: 'Update',
-        //   key: 'etiya-custom',
-        // });
-      }, 1000);
+        this.messageService.add({
+          detail: 'Sucsessfully updated',
+          severity: 'success',
+          summary: 'Update',
+          key: 'etiya-custom',
+        });
+      });
+    }
+  }
+
+  checkTcNum(id: number) {
+    this.customerService.getList().subscribe((response) => {
+      let matchCustomer = response.find((item) => {
+        return item.nationalityId == id;
+      });
+      if (matchCustomer) {
+        this.nationalityId = true;
+      } else {
+        this.updateCustomer();
+        this.nationalityId = false;
+      }
     });
+  }
+  update() {
+    this.checkInvalid();
   }
 
   isNumber(event: any): boolean {
@@ -100,5 +146,14 @@ export class UpdateCustomerComponent implements OnInit {
   previousPage(){
     this.router.navigateByUrl(`/dashboard/customers/customer-info/${this.selectedCustomerId}`)
 
+  }
+  onDateChange(event: any) {
+    let date = new Date(event.target.value);
+    if (date.getFullYear() > this.today.getFullYear()) {
+      this.updateCustomerForm.get('birthDate')?.setValue('');
+      this.futureDate = true;
+    } else {
+      this.futureDate = false;
+    }
   }
 }

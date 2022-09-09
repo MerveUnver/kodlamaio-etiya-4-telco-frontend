@@ -108,3 +108,16 @@ small{
   box-shadow: 4px 6px 2px rgba(0, 0, 0, 0.25), inset -1px 1px 2px 2px rgba(0, 0, 0, 0.25);
   border-radius: 8px;
 }
+input[type='date']::-webkit-calendar-picker-indicator {
+  background: url('../../../../../assets/img/Calendar.png') center/80% no-repeat;
+  color: white !important;
+  position: absolute;
+  right: -30px;
+  background-size: cover;
+  z-index: 99;
+}
+
+input[type='date'] {
+  position: relative;
+  overflow: visible;
+}

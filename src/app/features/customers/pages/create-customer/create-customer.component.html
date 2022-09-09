@@ -108,9 +108,12 @@
                   class="col-12 col-lg-8 d-flex justify-content-lg-start align-items-center"
                 >
                   <input
+                    class="col-7"
                     type="date"
                     etiyaInput="dark"
                     formControlName="birthDate"
+                    [max]="today | date: 'yyyy-MM-dd'"
+                    (blur)="onDateChange($event)"
                     [ngClass]="{
                       'invalid-input':
                         isShow && profileForm.controls['birthDate'].errors
@@ -118,12 +121,12 @@
                   />
                 </div>
                 <small
-                  *ngIf="isShow && profileForm.controls['birthDate'].errors"
+                  *ngIf="isBirthDate"
                   id="lastName-help"
                   class="p-error block ng-invalid ng-dirty"
-                  style="color: red; margin-left: 380px; margin-top: -20px"
+                  style="color: red; margin-left: 220px; margin-top: -15px"
                 >
-                  Please fill in the required fields
+                  The customer cannot be under the age of 18.
                 </small>
               </div>
             </div>
@@ -150,7 +153,6 @@
                       <option selected disabled value="">Select</option>
                       <option value="Female">Female</option>
                       <option value="Male">Male</option>
-                      <option value="Other">Other</option>
                     </select>
                   </div>
                 </div>
