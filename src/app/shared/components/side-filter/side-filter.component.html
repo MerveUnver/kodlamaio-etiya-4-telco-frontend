@@ -21,7 +21,7 @@
         </i>
       </label>
       <input
-        type="number"
+        type="text"
         etiyaInput="dark"
         formControlName="nationalityId"
         max="99999999999"
@@ -161,13 +161,13 @@
       etiyaButton="search"
       (click)="search()"
       [disabled]="
+        nationalityId.value.length < 11 &&
         customerId.value.length === 0 &&
         accountNumber.value.length === 0 &&
         gsmNumber.value.length === 0 &&
         firstName.value.length === 0 &&
         lastName.value.length === 0 &&
-        orderNumber.value.length === 0 &&
-        searchForm.valid
+        orderNumber.value.length === 0
       "
     >
       SEARCH<img

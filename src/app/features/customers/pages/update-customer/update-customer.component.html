@@ -204,21 +204,8 @@
               <div class="col-6 d-flex justify-content-lg-end">
                 <button
                   etiyaButton="clear"
-                  (click)="update()"
-                  [disabled]="
-                    updateCustomerForm.value.firstName == customer.firstName &&
-                    updateCustomerForm.value.lastName == customer.lastName &&
-                    updateCustomerForm.value.middleName ==
-                      customer.middleName &&
-                    updateCustomerForm.value.birthDate == customer.birthDate &&
-                    updateCustomerForm.value.gender == customer.gender &&
-                    updateCustomerForm.value.fatherName ==
-                      customer.fatherName &&
-                    updateCustomerForm.value.motherName ==
-                      customer.motherName &&
-                    updateCustomerForm.value.nationalityId ==
-                      customer.nationalityId
-                  "
+                  (click)="updateCustomer()"
+                  [disabled]="!updateCustomerForm.valid"
                 >
                   SAVE
                 </button>

@@ -83,6 +83,7 @@
                     type="text "
                     etiyaInput="dark"
                     formControlName="mobilePhone"
+                    max="99999999999"
                     onKeyPress="if(this.value.length==11) return false;"
                     (keypress)="isValid($event)"
                     onkeydown="return event.keyCode !== 17 &&  event.keyCode !== 86 "

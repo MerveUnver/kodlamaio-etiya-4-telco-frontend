@@ -53,10 +53,11 @@ export class ListAddressInfoComponent implements OnInit {
   remove() {
     this.customersService.removeAdress(this.addressToDelete);
   }
+
   handleConfigInput(event: any) {
     console.warn(event.isTrusted);
     this.customer.addresses = this.customer.addresses?.map((adr) => {
-      const newAddress = { ...adr, isMain: false };
+      const newAddress = { ...adr, isPrimary: false };
       return newAddress;
     });
     let findAddress = this.customer.addresses?.find((adr) => {

@@ -35,7 +35,19 @@ export class ConfigurationProductComponent implements OnInit {
     this.getParams();
     this.listenBasket();
   }
-
+  handleConfigRadio(event: any) {
+    this.billingAdress = this.billingAdress?.map((adr) => {
+      const newAddress = { ...adr, isPrimary: false };
+      return newAddress;
+    });
+    let findAddress = this.billingAdress?.find((adr) => {
+      return adr.id == event.target.value;
+    });
+    findAddress!.isMain = true;
+    this.customersService.update(this.customer).subscribe((data) => {
+      this.getCustomerById();
+    });
+  }
   listenBasket() {
     this.offerService.basket$.subscribe((data) => {
       this.basket = [...data];

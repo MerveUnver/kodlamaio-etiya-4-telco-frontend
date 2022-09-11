@@ -50,7 +50,6 @@
                           (change)="handleConfigInput($event)"
                           value="{{ address.id }}"
                           [checked]="
-                            address.isMain == true &&
                             this.customer.addresses &&
                             this.customer.addresses.length <= 1
                           "
@@ -66,7 +65,9 @@
 
                   <td>{{ address.street }}</td>
                   <td>{{ address.flatNumber }}</td>
-                  <td>{{ address.description }}</td>
+                  <td style="word-break: break-all">
+                    {{ address.description }}
+                  </td>
                   <td class="d-flex justify-content-center">
                     <button
                       (click)="selectAddressId(address.id)"
