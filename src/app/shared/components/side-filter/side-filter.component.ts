@@ -23,7 +23,7 @@ export class SideFilterComponent implements OnInit {
  
   createSearchForm(): void {
     this.searchForm = this.formBuilder.group({
-      nationalityId: ['', Validators.pattern('^[0-9]*$')],
+      nationalityId: ['', Validators.pattern('^[0-9]*\d{11}$')],
       customerId: ['', Validators.pattern('^[0-9]*$')],
       accountNumber: [''],
       gsmNumber: [''],

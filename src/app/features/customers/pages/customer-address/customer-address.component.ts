@@ -16,7 +16,6 @@ export class CustomerAddressComponent implements OnInit {
   addressToDelete!: Address;
   displayBasic!: boolean;
   findToAddress!: Address;
-
   constructor(
     private activatedRoute: ActivatedRoute,
     private customerService: CustomersService,

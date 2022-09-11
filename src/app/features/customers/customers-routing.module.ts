@@ -1,3 +1,4 @@
+import { CustomerBillingAccountUpdateComponent } from './pages/customer-billing-account-update/customer-billing-account-update.component';
 import { CustomerInfoComponent } from './pages/customer-info/customer-info.component';
 import { CustomerAddressComponent } from './pages/customer-address/customer-address.component';
 import { CreateCustomerComponent } from './pages/create-customer/create-customer.component';
@@ -58,6 +59,10 @@ const routes: Routes = [
     path: ':id/address/update/:addressId',
     component: AddCustomerAddressComponent,
   },
+  {
+    path: ':id/customer-bill/update/:billingId',
+    component: CustomerBillingAccountUpdateComponent,
+  }
 ];
 
 @NgModule({
