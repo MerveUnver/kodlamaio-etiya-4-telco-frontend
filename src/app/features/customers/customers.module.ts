@@ -1,3 +1,4 @@
+import { ButtonModule } from 'primeng/button';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomersRoutingModule } from './customers-routing.module';
@@ -19,6 +20,7 @@ import { SubmitOrderComponent } from './pages/submit-order/submit-order.componen
 import { CustomerContactMediumComponent } from './pages/customer-contact-medium/customer-contact-medium/customer-contact-medium.component';
 import { OfferSelectionComponent } from './pages/offer-selection/offer-selection.component';
 import { AddCustomerAddressComponent } from './pages/add-customer-address/add-customer-address.component';
+import { DialogModule } from 'primeng/dialog';
 import { CityModule } from '../city/city.module';
 
 @NgModule({
@@ -47,6 +49,8 @@ import { CityModule } from '../city/city.module';
     ReactiveFormsModule,
     FormsModule,
     CityModule,
+    DialogModule,
+    ButtonModule
   ],
 })
 export class CustomersModule {}

@@ -102,7 +102,7 @@ export class UpdateCustomerComponent implements OnInit {
         { id: this.customer.id },
         this.updateCustomerForm.value
       );
-      this.customerService.update(customer, this.customer).subscribe(() => {
+      this.customerService.updateInfo(customer, this.customer).subscribe(() => {
         this.router.navigateByUrl(
           `/dashboard/customers/customer-info/${customer.id}`
         );

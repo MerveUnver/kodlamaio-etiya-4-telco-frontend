@@ -28,6 +28,11 @@
                   type="text-area"
                   etiyaInput="dark"
                   formControlName="accountName"
+                  maxlength="100"
+                  [ngClass]="{
+                    'invalid-input':
+                      isShown && accountForm.controls['accountName'].errors
+                  }"
                 />
               </div>
             </div>
@@ -45,12 +50,28 @@
                 <textarea
                   class="e-address-desc"
                   placeholder=""
-                  formControlName="accountDescription"
+                  formControlName="description"
+                  maxlength="100"
+                  [ngClass]="{
+                    'invalid-input':
+                      isShown && accountForm.controls['description'].errors
+                  }"
                 ></textarea>
               </div>
             </div>
           </div>
         </div>
+        <small
+          *ngIf="
+            isShown &&
+            accountForm.controls['description'].errors &&
+            accountForm.controls['accountName'].errors
+          "
+          class="p-error block ng-invalid ng-dirty"
+          style="margin-left: 500px; margin-top: -50px"
+        >
+          *Mandatory fields can not left blank!
+        </small>
       </form>
       <div *ngIf="isShown == false">
         <div class="d-flex justify-content-center customer-title mb-5">
@@ -59,33 +80,109 @@
         <div class="e-customer-content1">
           <div>
             <div class="row w-100">
-              <table class="e-table table table-bordered table-hidden">
+              <table
+                class="e-table table table-bordered table-hidden"
+                [ngClass]="{
+                  'invalid-input': billingAdress.length == 0 && isValid
+                }"
+              >
                 <thead>
                   <tr class="table-title">
-                    <th>City</th>
-                    <th>Street Name</th>
-                    <th>House/Flat Number</th>
-                    <th>Address Description</th>
+                    <th class="col-2">City</th>
+                    <th class="col-2">Street Name</th>
+                    <th class="col-2">House/Flat Number</th>
+                    <th class="col-2">Address Description</th>
                   </tr>
                 </thead>
                 <tbody class="table-body">
                   <tr
                     *ngIf="
-                      !billingAdress || billingAdress.length == 0;
+                      (!billingAdress || billingAdress.length == 0) &&
+                        addresses;
                       else customerAddressList
                     "
                   >
-                    <th>Null</th>
-                    <td>Null</td>
-                    <td>Null</td>
-                    <td>Null</td>
+                    <th>
+                      <div class="row">
+                        <div class="col-2 d-flex justify-content-end">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="flexRadioDefault"
+                            id="flexRadioDefault1"
+                            (change)="handleConfigInput($event)"
+                            [value]="addresses.id"
+                            [checked]="addresses.isMain"
+                            [disabled]="addresses.isMain == true"
+                          />
+                          <label
+                            class="form-check-label"
+                            for="flexRadioDefault1"
+                          >
+                          </label>
+                        </div>
+                        <div class="col-10 e-city-name">
+                          {{ addresses.city.name }}
+                        </div>
+                      </div>
+                    </th>
+                    <td>{{ addresses.street }}</td>
+                    <td>{{ addresses.flatNumber }}</td>
+                    <td>{{ addresses.description }}</td>
                   </tr>
+
                   <ng-template #customerAddressList>
+                    <tr *ngIf="addresses">
+                      <th>
+                        <div class="row">
+                          <div class="col-2 d-flex justify-content-end">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="flexRadioDefault"
+                              id="flexRadioDefault1"
+                              (change)="handleConfigInput($event)"
+                              [value]="addresses.id"
+                              [checked]="addresses.isMain"
+                            />
+                            <label
+                              class="form-check-label"
+                              for="flexRadioDefault1"
+                            >
+                            </label>
+                          </div>
+                          <div class="col-10 e-city-name">
+                            {{ addresses.city.name }}
+                          </div>
+                        </div>
+                      </th>
+                      <td>{{ addresses.street }}</td>
+                      <td>{{ addresses.flatNumber }}</td>
+                      <td>{{ addresses.description }}</td>
+                    </tr>
+
                     <tr *ngFor="let billingadr of billingAdress">
                       <th style="display: flex">
                         <!-- <div>
                           <button etiyaButton="edit"></button>
                         </div> -->
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="flexRadioDefault"
+                            id="flexRadioDefault1"
+                            (change)="handleConfigInput($event)"
+                            value="{{ billingadr.id }}"
+                            [checked]="billingadr.isMain"
+                          />
+                          <label
+                            class="form-check-label"
+                            for="flexRadioDefault1"
+                          >
+                          </label>
+                        </div>
+
                         <div style="margin-left: 65px">
                           {{ billingadr.city.name }}
                         </div>
@@ -107,7 +204,15 @@
         <div class="d-flex justify-content-center">
           <div class="row mt-5 w-75">
             <div class="col-12 col-lg-6 d-flex justify-content-lg-start">
-              <button etiyaButton="clear" routerLink="recipes">CANCEL</button>
+              <button
+                etiyaButton="clear"
+                [routerLink]="
+                  '/dashboard/customers/customer-billing-account-detail/' +
+                  selectedCustomerId
+                "
+              >
+                CANCEL
+              </button>
             </div>
             <div class="col-12 col-lg-5 d-flex justify-content-lg-end">
               <button etiyaButton="clear" (click)="add()">Create</button>
@@ -130,6 +235,10 @@
                       name="gender"
                       id="gender"
                       formControlName="city"
+                      [ngClass]="{
+                        'invalid-input':
+                          isShownError && addressForm.controls['city'].errors
+                      }"
                     >
                       <option selected disabled hidden value="">
                         Choose a city
@@ -154,6 +263,11 @@
                     type="text"
                     etiyaInput="dark"
                     formControlName="flatNumber"
+                    [ngClass]="{
+                      'invalid-input':
+                        isShownError &&
+                        addressForm.controls['flatNumber'].errors
+                    }"
                   />
                 </div>
               </div>
@@ -170,6 +284,10 @@
                     type="text"
                     etiyaInput="dark"
                     formControlName="street"
+                    [ngClass]="{
+                      'invalid-input':
+                        isShownError && addressForm.controls['street'].errors
+                    }"
                   />
                 </div>
               </div>
@@ -186,14 +304,52 @@
                     class="e-address-desc"
                     placeholder=""
                     formControlName="description"
+                    maxlength="250"
+                    [ngClass]="{
+                      'invalid-input':
+                        isShownError &&
+                        addressForm.controls['description'].errors
+                    }"
                   ></textarea>
                 </div>
+                <small
+                  *ngIf="
+                    isShownError &&
+                    (addressForm.controls['description'].errors ||
+                      (isShownError && addressForm.controls['street'].errors) ||
+                      (isShownError &&
+                        addressForm.controls['flatNumber'].errors) ||
+                      (isShownError && addressForm.controls['city'].errors))
+                  "
+                  id="lastName-help"
+                  class="p-error block ng-invalid ng-dirty"
+                  style="color: red; margin-left: 400px; margin-top: 5px"
+                >
+                  Requirements field can not be left blank
+                </small>
               </div>
             </div>
           </div>
-          <div class="row mt-2 d-flex justify-content-center">
-            <div class="col-2">
-              <button etiyaButton="clear" (click)="addAddress()">SAVE</button>
+          <div class="mt-2 d-flex justify-content: space-around">
+            <div class="">
+              <button
+                etiyaButton="clear"
+                [routerLink]="
+                  '/dashboard/customers/customer-billing-account-detail/' +
+                  selectedCustomerId
+                "
+              >
+                CANCEL
+              </button>
+            </div>
+            <div class="ml-auto">
+              <button
+                etiyaButton="clear"
+                [disabled]="!addressForm.valid"
+                (click)="addAddress()"
+              >
+                SAVE
+              </button>
             </div>
           </div>
         </form>

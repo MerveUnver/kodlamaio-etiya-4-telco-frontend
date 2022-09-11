@@ -1,9 +1,9 @@
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
-import { Address } from 'src/app/features/customers/models/address';
 import { Component, OnInit } from '@angular/core';
 import { Customer } from '../../models/customer';
 import { CustomersService } from '../../services/customer/customers.service';
+import { Address } from '../../models/address';
 
 @Component({
   selector: 'app-list-address-info',
@@ -13,43 +13,58 @@ import { CustomersService } from '../../services/customer/customers.service';
 export class ListAddressInfoComponent implements OnInit {
   customer!: Customer;
   addressToDelete!: Address;
-  
-  constructor(private customersService: CustomersService,
+  displayBasic!: boolean;
+  isChecked!: boolean;
+  constructor(
+    private customersService: CustomersService,
     private router: Router,
-    private messageService: MessageService) {}
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     this.customersService.customerToAddModel$.subscribe((state) => {
       this.customer = state;
     });
     this.messageService.clearObserver.subscribe((data) => {
-      if (data == 'reject') {
+      if (data == 'r') {
         this.messageService.clear();
-      } else if (data == 'confirm') {
+      } else if (data == 'c') {
         this.remove();
-        this.messageService.clear();
       }
     });
   }
   selectAddressId(id: number) {
     let address = this.customer.addresses?.find((c) => c.id == id);
-    this.router.navigateByUrl(`/dashboard/customers/update-address-info/${address?.id}`);
+    this.router.navigateByUrl(`update-address-info/${address?.id}`);
   }
-
   removePopup(address: Address) {
-    // if (this.customer.addresses && this.customer.addresses?.length <= 1) {
-    //   alert('1 adres varsa silemezsin.');
-    //   return;
-    // }
+    if (this.customer.addresses && this.customer.addresses?.length <= 1) {
+      this.displayBasic = true;
+      return;
+    }
     this.addressToDelete = address;
     this.messageService.add({
       key: 'c',
       sticky: true,
       severity: 'warn',
-      detail: 'Are you sure you want to delete?',
+      detail: 'Are you sure to delete this address?',
     });
   }
   remove() {
-    this.customersService.removeAdressToStore(this.addressToDelete);
+    this.customersService.removeAdress(this.addressToDelete);
+  }
+  handleConfigInput(event: any) {
+    console.warn(event.isTrusted);
+    this.customer.addresses = this.customer.addresses?.map((adr) => {
+      const newAddress = { ...adr, isMain: false };
+      return newAddress;
+    });
+    let findAddress = this.customer.addresses?.find((adr) => {
+      return adr.id == event.target.value;
+    }) as Address;
+    findAddress!.isMain = true;
+    this.isChecked = true;
+
+    this.customersService.updateAddressInfoToStore(findAddress);
   }
 }

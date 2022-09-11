@@ -10,6 +10,7 @@ import { CustomersService } from 'src/app/features/customers/services/customer/c
 export class SideFilterComponent implements OnInit {
   @Input() filterTitle!: string;
   searchForm!: FormGroup;
+  isShow: Boolean = false;
   @Output() filteredData: any = new EventEmitter();
   constructor(
     private formBuilder: FormBuilder,
@@ -23,7 +24,7 @@ export class SideFilterComponent implements OnInit {
   createSearchForm(): void {
     this.searchForm = this.formBuilder.group({
       nationalityId: ['', Validators.pattern('^[0-9]*$')],
-      customerId: [''],
+      customerId: ['', Validators.pattern('^[0-9]*$')],
       accountNumber: [''],
       gsmNumber: [''],
       firstName: ['',Validators.pattern('^[A-Za-z0-9_]{0,50}$')],
@@ -40,7 +41,7 @@ export class SideFilterComponent implements OnInit {
     };
     this.customersService.getListByFilter(newSearchForm).subscribe((data) => {
       this.filteredData.emit(data);
-      this.clear();
+     this.clear();
     });
   }
   clear() {

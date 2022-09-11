@@ -29,14 +29,36 @@
             <div class="row d-flex justify-space-between align-items-center">
               <div class="col-6">
                 <div class="form-group">
-                  <label class="col-5" for="email">Email:</label>
+                  <label class="col-5" for="email">Email*:</label>
                   <input
                     class="col-7"
                     type="text"
                     etiyaInput="dark"
                     formControlName="email"
+                    placeholder="admin@admin.com"
+                    [ngClass]="{
+                      'invalid-input':
+                        (isShow &&
+                          updateCustomerContactForm.controls['email'].errors) ||
+                        (updateCustomerContactForm
+                          .get('email')
+                          ?.hasError('required') &&
+                          updateCustomerContactForm.get('email')?.touched)
+                    }"
                   />
                 </div>
+                <small
+                  style="margin-left: 212px"
+                  class="p-error block ng-invalid ng-dirty"
+                  *ngIf="
+                    updateCustomerContactForm
+                      .get('email')
+                      ?.hasError('required') &&
+                    updateCustomerContactForm.get('email')?.touched
+                  "
+                >
+                  This field is required
+                </small>
               </div>
               <div class="col-6 form-group">
                 <div class="form-group">
@@ -46,20 +68,48 @@
                     type="text "
                     etiyaInput="dark"
                     formControlName="homePhone"
+                    onKeyPress="if(this.value.length==11) return false;"
+                    (keypress)="isValid($event)"
+                    onkeydown="return event.keyCode !== 17 &&  event.keyCode !== 86 "
                   />
                 </div>
               </div>
 
               <div class="col-6">
                 <div class="form-group">
-                  <label class="col-5" for="mobilePhone">Mobile Phone :</label>
+                  <label class="col-5" for="mobilePhone">Mobile Phone*:</label>
                   <input
                     class="col-7"
                     type="text "
                     etiyaInput="dark"
                     formControlName="mobilePhone"
+                    onKeyPress="if(this.value.length==11) return false;"
+                    (keypress)="isValid($event)"
+                    onkeydown="return event.keyCode !== 17 &&  event.keyCode !== 86 "
+                    [ngClass]="{
+                      'invalid-input':
+                        (isShow &&
+                          updateCustomerContactForm.controls['mobilePhone']
+                            .errors) ||
+                        (updateCustomerContactForm
+                          .get('mobilePhone')
+                          ?.hasError('required') &&
+                          updateCustomerContactForm.get('mobilePhone')?.touched)
+                    }"
                   />
                 </div>
+                <small
+                  style="margin-left: 212px"
+                  class="p-error block ng-invalid ng-dirty"
+                  *ngIf="
+                    updateCustomerContactForm
+                      .get('mobilePhone')
+                      ?.hasError('required') &&
+                    updateCustomerContactForm.get('mobilePhone')?.touched
+                  "
+                >
+                  This field is required
+                </small>
               </div>
               <div class="col-6">
                 <div class="form-group">
@@ -69,6 +119,9 @@
                     type="text"
                     etiyaInput="dark"
                     formControlName="fax"
+                    onKeyPress="if(this.value.length==11) return false;"
+                    (keypress)="isValid($event)"
+                    onkeydown="return event.keyCode !== 17 &&  event.keyCode !== 86 "
                   />
                 </div>
               </div>
@@ -88,7 +141,13 @@
                 </button>
               </div>
               <div class="col-6 d-flex justify-content-lg-end">
-                <button etiyaButton="clear" (click)="update()">SAVE</button>
+                <button
+                  etiyaButton="clear"
+                  [disabled]="!this.updateCustomerContactForm.valid"
+                  (click)="update()"
+                >
+                  SAVE
+                </button>
               </div>
             </div>
           </div>

@@ -7,6 +7,7 @@ import { CustomersService } from '../../../services/customer/customers.service';
 import { Address } from '../../../models/address';
 import { Customer } from '../../../models/customer';
 import { BillingAccount } from '../../../models/billingAccount';
+import { MessageService } from 'primeng/api';
 
 @Component({
   templateUrl: './customer-billing-account.component.html',
@@ -22,20 +23,27 @@ export class CustomerBillingAccountComponent implements OnInit {
   billingAccount!: BillingAccount;
 
   billingAdress: Address[] = [];
+  isValid: boolean = false;
+  isShownError: boolean = false;
+  addresses!: Address;
+  mainAddres!: number;
 
   constructor(
     private formBuilder: FormBuilder,
     private cityService: CityService,
     private customerService: CustomersService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
     this.getParams();
     this.getCityList();
+    this.getMainAddress();
+    this.createAddressForm();
+    this.createAccountForm();
   }
-
   getParams() {
     this.activatedRoute.params.subscribe((params) => {
       if (params['id']) this.selectedCustomerId = Number(params['id']);
@@ -51,8 +59,6 @@ export class CustomerBillingAccountComponent implements OnInit {
         .getCustomerById(this.selectedCustomerId)
         .subscribe((data) => {
           this.customer = data;
-          this.createAddressForm();
-          this.createAccountForm();
         });
     }
   }
@@ -60,7 +66,7 @@ export class CustomerBillingAccountComponent implements OnInit {
   createAccountForm() {
     this.accountForm = this.formBuilder.group({
       accountName: ['', Validators.required],
-      accountDescription: ['', Validators.required],
+      description: ['', Validators.required],
     });
   }
 
@@ -85,24 +91,94 @@ export class CustomerBillingAccountComponent implements OnInit {
     });
   }
 
+  isMainAdd() {
+    return this.addresses == undefined ? true : false;
+  }
+
   addAddress() {
-    const addressToAdd: Address = {
-      ...this.addressForm.value,
-      city: this.cityList.find(
-        (city) => city.id == this.addressForm.value.city.id
-      ),
-    };
-    this.billingAdress.push(addressToAdd);
-    console.log(this.billingAdress);
-    this.isShown = false;
+    if (this.addressForm.valid) {
+      this.isShownError = false;
+      const addressToAdd: Address = {
+        ...this.addressForm.value,
+        city: this.cityList.find(
+          (city) => city.id == this.addressForm.value.city.id
+        ),
+        isMain: this.isMainAdd(),
+      };
+      this.billingAdress.push(addressToAdd);
+      console.log(this.billingAdress);
+      this.isShown = false;
+    } else {
+      this.isValid = false;
+      this.isShownError = true;
+    }
   }
 
   add() {
-    this.billingAccount = this.accountForm.value;
-    this.billingAccount.addresses = this.billingAdress;
-    console.log(this.billingAccount);
+    //this.billingAccount = this.accountForm.value;
+    //this.billingAccount.addresses = this.billingAdress;
+    if (this.accountForm.invalid) {
+      this.isShown = true;
+      return;
+    }
+
+    let newBillingAccount: BillingAccount = {
+      ...this.accountForm.value,
+      addresses: [...this.billingAdress, this.addresses],
+    };
     this.customerService
-      .addBillingAccount(this.billingAccount, this.customer)
-      .subscribe();
+      .addBillingAccount(newBillingAccount, this.customer)
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            detail: 'Sucsessfully added',
+            severity: 'success',
+            summary: 'Add',
+            key: 'etiya-custom',
+          });
+          this.router.navigateByUrl(
+            `/dashboard/customers/customer-billing-account-detail/${this.selectedCustomerId}`
+          );
+        },
+        error: (err) => {
+          this.messageService.add({
+            detail: 'Error created',
+            severity: 'danger',
+            summary: 'Error',
+            key: 'etiya-custom',
+          });
+        },
+      });
+  }
+
+  getMainAddress() {
+    this.customerService
+      .getCustomerById(this.selectedCustomerId)
+      .subscribe((data) => {
+        data.addresses?.forEach((adr) => {
+          if (adr.isMain == true) this.addresses = adr;
+        });
+      });
+  }
+
+  handleConfigInput(event: any) {
+    this.mainAddres = event.target.value;
+    //this.add(event.target.value)
+    this.billingAccount.addresses = this.billingAccount.addresses?.map(
+      (adr) => {
+        const newAddress = { ...adr, isMain: false };
+        return newAddress;
+      }
+    );
+
+    let findAddressBill = this.billingAccount.addresses.find((adr) => {
+      return adr.id == event.target.value;
+    });
+
+    findAddressBill!.isMain = true;
+    this.customerService.update(this.customer).subscribe((data) => {
+      console.log(data);
+      this.getCustomerById();
+    });
   }
 }

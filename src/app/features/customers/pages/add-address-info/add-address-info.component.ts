@@ -56,6 +56,7 @@ export class AddAddressInfoComponent implements OnInit {
       street: [this.addressList?.street || '', Validators.required],
       flatNumber: [this.addressList?.flatNumber || '', Validators.required],
       description: [this.addressList?.description || '', Validators.required],
+      district: [this.addressList?.district || '', Validators.required]
     });
   }
 
@@ -109,6 +110,9 @@ export class AddAddressInfoComponent implements OnInit {
     else{
       this.isShow = true
     }
+  }
+  closeIconRoute(){
+    this.router.navigateByUrl(`/dashboard/customers/list-address-info`)
   }
 
 

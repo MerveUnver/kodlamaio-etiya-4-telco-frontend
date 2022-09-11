@@ -19,6 +19,7 @@ export class AddCustomerAddressComponent implements OnInit {
   customer!: Customer;
   addressToUpdate!: Address;
   cityList!: City[];
+  isShow:Boolean=false
 
   constructor(
     private formBuilder: FormBuilder,
@@ -69,9 +70,10 @@ export class AddCustomerAddressComponent implements OnInit {
 
   createAddressForm() {
     this.addressForm = this.formBuilder.group({
-      city: [this.addressToUpdate?.city.id || 0, Validators.required],
+      city: [this.addressToUpdate?.city.id || 0, [Validators.required,Validators.min(1)]],
       street: [this.addressToUpdate?.street || '', Validators.required],
       flatNumber: [this.addressToUpdate?.flatNumber || '', Validators.required],
+      district: [this.addressToUpdate?.district || '', Validators.required],
       description: [
         this.addressToUpdate?.description || '',
         Validators.required,
@@ -86,15 +88,22 @@ export class AddCustomerAddressComponent implements OnInit {
   }
 
   save() {
-    if (this.addressToUpdate === undefined){
-      this.add();
-      this.router.navigateByUrl(`/dashboard/customers/customer-address/${this.selectedCustomerId})
-      }`)
-    } 
-    else {
-      this.update();
-      this.router.navigateByUrl(`/dashboard/customers/customer-address/${this.selectedCustomerId}`)
+    if (this.addressForm.valid) {
+      this.isShow = false
+      if (this.addressToUpdate === undefined){
+        this.add();
+        this.router.navigateByUrl(`/dashboard/customers/customer-address/${this.selectedCustomerId})
+        }`)
+      } 
+      else {
+        this.update();
+        this.router.navigateByUrl(`/dashboard/customers/customer-address/${this.selectedCustomerId}`)
+      }
     }
+    else{
+      this.isShow = true
+    }
+  
   }
 
   add() {
@@ -119,6 +128,7 @@ export class AddCustomerAddressComponent implements OnInit {
       .updateAddress(addressToUpdate, this.customer)
       .subscribe();
   }
+
   closeIconRoute(){
     this.router.navigateByUrl(`/dashboard/customers/customer-address/${this.selectedCustomerId}`)
   }

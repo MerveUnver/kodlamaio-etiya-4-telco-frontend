@@ -1,3 +1,4 @@
+import { ContactMedium } from './../../../models/contactMedium';
 import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
@@ -17,7 +18,10 @@ import { CustomersService } from '../../../services/customer/customers.service';
 export class UpdateCustContactMediumComponent implements OnInit {
   updateCustomerContactForm!: FormGroup;
   selectedCustomerId!: number;
-  customer!: Customer;
+  isShow: Boolean = false;
+  updateContactMedium!:ContactMedium;
+
+  customer!:Customer;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -33,13 +37,13 @@ export class UpdateCustContactMediumComponent implements OnInit {
 
   createFormUpdateContactCustomer() {
     this.updateCustomerContactForm = this.formBuilder.group({
-      email: [this.customer.contactMedium?.email, Validators.required],
-      homePhone: [this.customer.contactMedium?.homePhone, Validators.required],
+      email: [this.customer.contactMedium?.email, [Validators.required, Validators.email]],
+      homePhone: [this.customer.contactMedium?.homePhone, Validators.pattern('^[0-9]{11}$')],
       mobilePhone: [
         this.customer.contactMedium?.mobilePhone,
-        Validators.required,
+        [Validators.pattern('^[0-9]{11}$'), Validators.required],
       ],
-      fax: [this.customer.contactMedium?.fax, Validators.required],
+      fax: [this.customer.contactMedium?.fax, Validators.pattern('^[0-9]{11}$')],
     });
   }
   getCustomerById() {
@@ -73,8 +77,25 @@ export class UpdateCustContactMediumComponent implements OnInit {
       });
       return;
     }
+    if (this.updateCustomerContactForm.value.homePhone) {
+      var homePhone = this.updateCustomerContactForm.value.homePhone.toString();
+    }
+    if (this.updateCustomerContactForm.value.mobilePhone) {
+      var mobilePhone =
+        this.updateCustomerContactForm.value.mobilePhone.toString();
+    }
+    if (this.updateCustomerContactForm.value.fax) {
+      var fax = this.updateCustomerContactForm.value.fax.toString();
+    }
+
+    const newContactForm = {
+      ...this.updateCustomerContactForm.value,
+      homePhone: homePhone,
+      mobilePhone: mobilePhone,
+      fax: fax,
+    };
     this.customersService
-      .updateContactMedium(this.updateCustomerContactForm.value, this.customer)
+      .updateContactMedium(newContactForm, this.customer)
       .subscribe(() => {
         this.router.navigateByUrl(
           `/dashboard/customers/customer-contact-medium/${this.customer.id}`
@@ -86,5 +107,14 @@ export class UpdateCustContactMediumComponent implements OnInit {
           key: 'etiya-custom',
         });
       });
+  }
+  isValid(event: any): boolean {
+    console.log(event);
+    const pattern = /[0-9]/;
+    const char = String.fromCharCode(event.which ? event.which : event.keyCode);
+    if (pattern.test(char)) return true;
+
+    event.preventDefault();
+    return false;
   }
 }

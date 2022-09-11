@@ -6,4 +6,6 @@ export interface Address {
   street: string;
   flatNumber: number;
   description: string;
+  district:string;
+  isMain:boolean;
 }

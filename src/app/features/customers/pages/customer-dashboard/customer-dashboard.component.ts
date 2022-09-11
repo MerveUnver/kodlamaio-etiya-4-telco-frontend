@@ -1,5 +1,5 @@
 import { Customer } from './../../models/customer';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CustomersService } from '../../services/customer/customers.service';
 import { Router } from '@angular/router';
 
@@ -11,6 +11,7 @@ export class CustomerDashboardComponent implements OnInit {
   customerList!: Customer[];
   filteredCustomerList!: Customer[];
   lenght!: number;
+  @Input() st:boolean=false;
 
   constructor(
     private customersService: CustomersService,
@@ -30,6 +31,7 @@ export class CustomerDashboardComponent implements OnInit {
   search(event: any) {
     this.filteredCustomerList = event;
     this.lenght = this.filteredCustomerList.length;
+    this.st=true
   }
 
   getCustomerId(customer: Customer) {

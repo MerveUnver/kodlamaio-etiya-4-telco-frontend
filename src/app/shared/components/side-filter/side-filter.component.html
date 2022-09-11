@@ -14,23 +14,25 @@
         <i
           class="icon-info-sign"
           data-toggle="tooltip"
-          title="Must be 7 characters"
+          title="Must be 11 characters"
           id="example"
         >
           <img src="../../../../assets/img/info.png" width="20" height="20" />
         </i>
       </label>
       <input
-        max="99999999999"
-        min="10000000000"
-        (keypress)="isValid($event)"
-        type="text"
+        type="number"
         etiyaInput="dark"
         formControlName="nationalityId"
+        max="99999999999"
+        min="10000000000"
         onKeyPress="if(this.value.length==11) return false;"
+        [ngClass]="{
+          'invalid-input': isShow && searchForm.controls['nationalityId'].errors
+        }"
+        (keypress)="isValid($event)"
         #nationalityId
       />
-
       <label class="e-label"
         >CUSTOMER ID
         <i
@@ -143,7 +145,7 @@
         </i>
       </label>
       <input
-        type="text"
+        type="number"
         etiyaInput="dark"
         formControlName="orderNumber"
         min="0"
@@ -159,13 +161,13 @@
       etiyaButton="search"
       (click)="search()"
       [disabled]="
-        nationalityId.value.length === 0 &&
         customerId.value.length === 0 &&
         accountNumber.value.length === 0 &&
         gsmNumber.value.length === 0 &&
         firstName.value.length === 0 &&
         lastName.value.length === 0 &&
-        orderNumber.value.length === 0
+        orderNumber.value.length === 0 &&
+        searchForm.valid
       "
     >
       SEARCH<img
