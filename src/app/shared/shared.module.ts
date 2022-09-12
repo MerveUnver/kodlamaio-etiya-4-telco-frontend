@@ -35,6 +35,7 @@ import { TableAccordionHeaderComponent } from './components/table-accordion-head
 import { StoreModule } from '@ngrx/store';
 import { sharedReducers } from './store/shared.reducers';
 import { ConfirmationDialogPopupComponent } from './components/confirmation-dialog-popup/confirmation-dialog-popup.component';
+import { OfferPopupComponent } from './components/offer-popup/offer-popup.component';
 
 
 @NgModule({
@@ -65,7 +66,8 @@ import { ConfirmationDialogPopupComponent } from './components/confirmation-dial
     CheckBoxDirective,
     TableScrollComponent,
     TableAccordionHeaderComponent,
-    ConfirmationDialogPopupComponent
+    ConfirmationDialogPopupComponent,
+    OfferPopupComponent
    
   ],
   imports: [
@@ -102,7 +104,8 @@ import { ConfirmationDialogPopupComponent } from './components/confirmation-dial
     InputDirective,
     TableScrollComponent,
     TableAccordionHeaderComponent,
-    ConfirmationDialogPopupComponent
+    ConfirmationDialogPopupComponent,
+    OfferPopupComponent
  
   ],
   providers: [MessageService],

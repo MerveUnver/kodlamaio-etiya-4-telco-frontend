@@ -31,10 +31,17 @@
                   maxlength="100"
                   [ngClass]="{
                     'invalid-input':
-                      isShown && accountForm.controls['accountName'].errors
+                      isEmpty && accountForm.controls['accountName'].errors
                   }"
                 />
               </div>
+              <small
+                *ngIf="isEmpty && accountForm.controls['accountName'].errors"
+                class="p-error block ng-invalid ng-dirty"
+                style="color: red"
+              >
+                This field is required.
+              </small>
             </div>
           </div>
           <div class="col-12 mb-5">
@@ -54,10 +61,17 @@
                   maxlength="100"
                   [ngClass]="{
                     'invalid-input':
-                      isShown && accountForm.controls['description'].errors
+                      isEmpty && accountForm.controls['description'].errors
                   }"
                 ></textarea>
               </div>
+              <small
+                *ngIf="isEmpty && accountForm.controls['description'].errors"
+                class="p-error block ng-invalid ng-dirty"
+                style="color: red"
+              >
+                This field is required.
+              </small>
             </div>
           </div>
         </div>

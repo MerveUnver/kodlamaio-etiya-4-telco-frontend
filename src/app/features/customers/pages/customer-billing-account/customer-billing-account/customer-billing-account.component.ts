@@ -21,7 +21,7 @@ export class CustomerBillingAccountComponent implements OnInit {
   selectedCustomerId!: number;
   customer!: Customer;
   billingAccount!: BillingAccount;
-
+isEmpty:boolean=false;
   billingAdress: Address[] = [];
   isValid: boolean = false;
   isShownError: boolean = false;
@@ -115,40 +115,26 @@ export class CustomerBillingAccountComponent implements OnInit {
   }
 
   add() {
-    //this.billingAccount = this.accountForm.value;
-    //this.billingAccount.addresses = this.billingAdress;
-    if (this.accountForm.invalid) {
-      this.isShown = true;
-      return;
+    if (this.accountForm.valid) {
+      this.isEmpty = false;
+      this.billingAccount = this.accountForm.value;
+      this.billingAccount.addresses = this.billingAdress;
+      this.billingAccount.status = 'active';
+      this.billingAccount.accountNumber = String(
+        Math.floor(Math.random() * 1000000000)
+      );
+      console.log(this.billingAccount);
+      this.customerService
+        .addBillingAccount(this.billingAccount, this.customer)
+        .subscribe();
+      this.router.navigateByUrl(
+        '/dashboard/customers/customer-billing-account-detail/' +
+          this.selectedCustomerId
+      );
+    } else {
+      this.isEmpty = true;
+      this.isValid = false;
     }
-
-    let newBillingAccount: BillingAccount = {
-      ...this.accountForm.value,
-      addresses: [...this.billingAdress, this.addresses],
-    };
-    this.customerService
-      .addBillingAccount(newBillingAccount, this.customer)
-      .subscribe({
-        next: () => {
-          this.messageService.add({
-            detail: 'Sucsessfully added',
-            severity: 'success',
-            summary: 'Add',
-            key: 'etiya-custom',
-          });
-          this.router.navigateByUrl(
-            `/dashboard/customers/customer-billing-account-detail/${this.selectedCustomerId}`
-          );
-        },
-        error: (err) => {
-          this.messageService.add({
-            detail: 'Error created',
-            severity: 'danger',
-            summary: 'Error',
-            key: 'etiya-custom',
-          });
-        },
-      });
   }
 
   getMainAddress() {
