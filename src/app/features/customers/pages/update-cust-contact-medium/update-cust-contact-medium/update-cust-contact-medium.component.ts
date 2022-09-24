@@ -20,7 +20,6 @@ export class UpdateCustContactMediumComponent implements OnInit {
   selectedCustomerId!: number;
   isShow: Boolean = false;
   updateContactMedium!:ContactMedium;
-
   customer!:Customer;
 
   constructor(

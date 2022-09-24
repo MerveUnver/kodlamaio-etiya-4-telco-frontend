@@ -121,7 +121,26 @@ export class CustomersService {
     };
     this.store.dispatch(updateAddressInfo(newAddress));
   }
-
+  updateDemographicInfo(
+    customerDemographicInfo: any,
+    customer: Customer
+  ): Observable<Customer> {
+    const newCustomer: Customer = {
+      ...customer,
+      firstName: customerDemographicInfo.firstName,
+      middleName: customerDemographicInfo.middleName,
+      lastName: customerDemographicInfo.lastName,
+      birthDate: customerDemographicInfo.birthDate,
+      gender: customerDemographicInfo.gender,
+      nationalityId: customerDemographicInfo.nationalityId,
+      motherName: customerDemographicInfo.motherName,
+      fatherName: customerDemographicInfo.fatherName,
+    };
+    return this.httpClient.put<Customer>(
+      `${this.apiControllerUrl}/${customer.id}`,
+      newCustomer
+    );
+  }
   removeAdressToStore(address: Address) {
     this.store.dispatch(removeAddressInfo(address));
   }

@@ -20,7 +20,7 @@
     <label class="ml-4 mt-2">Update Info </label>
 
     <div class="p-5"></div>
-    <div class="e-customer-content">
+    <div class="e-customer-content mb-5">
       <div class="d-flex justify-content-center">
         <form
           *ngIf="updateCustomerForm"
@@ -31,13 +31,12 @@
             <div class="row d-flex justify-space-between align-items-center">
               <div class="col-6">
                 <div class="form-group">
-                  <label class="col-5" for="first-name">First Name* :</label>
+                  <label class="col-5" for="first-name">First Name*:</label>
                   <input
                     class="col-7"
                     type="text"
                     etiyaInput="dark"
                     formControlName="firstName"
-                    maxlength="50"
                     [ngClass]="{
                       'invalid-input':
                         isShow &&
@@ -45,39 +44,57 @@
                     }"
                   />
                 </div>
+                <small
+                  *ngIf="
+                    isShow && updateCustomerForm.controls['firstName'].errors
+                  "
+                  id="lastName-help"
+                  class="p-error block ng-invalid ng-dirty"
+                  style="color: red; margin-left: 220px; margin-top: -20px"
+                >
+                  Mandatory fields can not left blank!
+                </small>
               </div>
               <div class="col-6 form-group">
                 <div class="form-group">
-                  <label class="col-5" for="middleName">Middle Name :</label>
+                  <label class="col-5" for="middleName">Middle Name:</label>
                   <input
                     class="col-7"
                     type="text "
                     etiyaInput="dark"
                     formControlName="middleName"
-                    maxlength="50"
                   />
                 </div>
               </div>
 
               <div class="col-6">
                 <div class="form-group">
-                  <label class="col-5" for="lastName">Last Name* :</label>
+                  <label class="col-5" for="lastName">Last Name*:</label>
                   <input
                     class="col-7"
                     type="text "
                     etiyaInput="dark"
                     formControlName="lastName"
-                    maxlength="50"
                     [ngClass]="{
                       'invalid-input':
                         isShow && updateCustomerForm.controls['lastName'].errors
                     }"
                   />
                 </div>
+                <small
+                  *ngIf="
+                    isShow && updateCustomerForm.controls['lastName'].errors
+                  "
+                  id="lastName-help"
+                  class="p-error block ng-invalid ng-dirty"
+                  style="color: red; margin-left: 220px; margin-top: -20px"
+                >
+                  Mandatory fields can not left blank!
+                </small>
               </div>
               <div class="col-6">
                 <div class="form-group">
-                  <label class="col-5" for="birthDate">Birth Date* :</label>
+                  <label class="col-5" for="birthDate">Birth Date*:</label>
                   <input
                     class="col-7"
                     type="date"
@@ -88,10 +105,23 @@
                     [ngClass]="{
                       'invalid-input':
                         isShow &&
-                        updateCustomerForm.controls['birthDate'].errors
+                        updateCustomerForm.controls['birthDate'].errors &&
+                        !futureDate
                     }"
                   />
                 </div>
+                <small
+                  *ngIf="
+                    isShow &&
+                    updateCustomerForm.controls['birthDate'].errors &&
+                    !futureDate
+                  "
+                  class="p-error block ng-invalid ng-dirty"
+                  style="color: red; margin-left: 220px; margin-top: -20px"
+                >
+                  Mandatory fields can not left blank!
+                </small>
+
                 <small
                   *ngIf="futureDate"
                   class="p-error block ng-invalid ng-dirty"
@@ -99,19 +129,11 @@
                 >
                   Please enter a valid date of birth
                 </small>
-                <small
-                  *ngIf="under18"
-                  class="p-error block ng-invalid ng-dirty"
-                  style="color: red; margin-left: 220px; margin-top: -20px"
-                >
-                  The customer cannot be under the age of 18.
-                </small>
               </div>
+
               <div class="col-6">
-                <div
-                  class="form-group d-flex justify-content-lg-start align-items-center"
-                >
-                  <label class="col-5" for="gender">Gender* :</label>
+                <div class="form-group d-flex">
+                  <label class="col-5" for="gender">Gender*:</label>
                   <div class="e-dropdown col-7 p-0">
                     <select
                       name="gender"
@@ -125,9 +147,18 @@
                     >
                       <option selected value="Female">Female</option>
                       <option value="Male">Male</option>
-                      <option value="Other">Other</option>
                     </select>
                   </div>
+                  <small
+                    *ngIf="
+                      isShow && updateCustomerForm.controls['gender'].errors
+                    "
+                    id="lastName-help"
+                    class="p-error block ng-invalid ng-dirty"
+                    style="color: red; margin-left: 220px; margin-top: -20px"
+                  >
+                    Mandatory fields can not left blank!
+                  </small>
                 </div>
               </div>
 
@@ -139,7 +170,6 @@
                     type="text"
                     etiyaInput="dark"
                     formControlName="fatherName"
-                    maxlength="50"
                   />
                 </div>
               </div>
@@ -151,22 +181,21 @@
                     type="text"
                     etiyaInput="dark"
                     formControlName="motherName"
-                    maxlength="50"
                   />
                 </div>
               </div>
               <div class="col-6">
                 <div class="form-group">
-                  <label class="col-5" for="nationalId"
-                    >Nationality ID* :</label
-                  >
+                  <label class="col-5" for="nationalId">Nationality ID*:</label>
                   <input
+                    min="10000000000"
+                    max="99999999999"
+                    (keypress)="isValid($event)"
+                    onKeyPress="if(this.value.length==11) return false;"
                     class="col-7"
                     type="text"
                     etiyaInput="dark"
                     formControlName="nationalityId"
-                    onKeyPress="if(this.value.length==11) return false;"
-                    (keypress)="isNumber($event)"
                     [ngClass]="{
                       'invalid-input':
                         isShow &&
@@ -176,20 +205,14 @@
                 </div>
                 <small
                   *ngIf="
-                    isShow &&
-                    updateCustomerForm.controls['nationalityId'].errors
+                    isShow && updateCustomerForm.controls['nationalityId'].errors?.['pattern']
                   "
+                  id="nationalityId-help"
                   class="p-error block ng-invalid ng-dirty"
-                  style="color: red; margin-left: 218px; margin-top: -20px"
+                  etiyaError="error-text"
+                  style="color: red; margin-left: 220px; margin-top: -20px"
                 >
-                  compulsory fields must be filled.
-                </small>
-                <small
-                  *ngIf="nationalityId"
-                  class="p-error block ng-invalid ng-dirty"
-                  style="color: red; margin-left: 218px; margin-top: -20px"
-                >
-                  A customer with this nationality ID already exists.
+                  You must enter 11 digits
                 </small>
               </div>
             </div>
@@ -197,36 +220,39 @@
           <div class="d-flex justify-content-center">
             <div style="width: 1125px" class="row p-0 pt-4">
               <div class="col-6 d-flex justify-content-lg-start">
-                <button etiyaButton="clear" (click)="previousPage()">
+                <button
+                  etiyaButton="clear"
+                  routerLink="/dashboard/customers/customer-info/{{
+                    customer.id
+                  }}"
+                >
                   CANCEL
                 </button>
               </div>
               <div class="col-6 d-flex justify-content-lg-end">
                 <button
                   etiyaButton="clear"
-                  (click)="updateCustomer()"
-                  [disabled]="!updateCustomerForm.valid"
+                  [disabled]="
+                    updateCustomerForm.value.firstName == customer.firstName &&
+                    updateCustomerForm.value.lastName == customer.lastName &&
+                    updateCustomerForm.value.middleName ==
+                      customer.middleName &&
+                    updateCustomerForm.value.birthDate == customer.birthDate &&
+                    updateCustomerForm.value.gender == customer.gender &&
+                    updateCustomerForm.value.fatherName ==
+                      customer.fatherName &&
+                    updateCustomerForm.value.motherName ==
+                      customer.motherName &&
+                    updateCustomerForm.value.nationalityId ==
+                      customer.nationalityId
+                  "
+                  (click)="update()"
                 >
                   SAVE
                 </button>
               </div>
             </div>
           </div>
-          <small
-            *ngIf="
-              isShow &&
-              (updateCustomerForm.controls['firstName'].errors ||
-                (isShow && updateCustomerForm.controls['lastName'].errors) ||
-                (isShow && updateCustomerForm.controls['birthDate'].errors) ||
-                (isShow && updateCustomerForm.controls['gender'].errors) ||
-                (isShow && updateCustomerForm.controls['nationalityId'].errors))
-            "
-            id="lastName-help"
-            class="p-error block ng-invalid ng-dirty"
-            style="color: red; margin-left: 350px; margin-top: 5px"
-          >
-            This field is required
-          </small>
         </form>
       </div>
     </div>

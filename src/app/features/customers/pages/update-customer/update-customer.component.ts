@@ -15,11 +15,9 @@ export class UpdateCustomerComponent implements OnInit {
   updateCustomerForm!: FormGroup;
   selectedCustomerId!: number;
   customer!: Customer;
-  isShow:Boolean=false
-  under18: Boolean = false;
-  futureDate: Boolean = false;
+  isShow: boolean = false;
   today: Date = new Date();
-  nationalityId: Boolean = false;
+  futureDate: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,6 +30,7 @@ export class UpdateCustomerComponent implements OnInit {
   ngOnInit(): void {
     this.getCustomerById();
   }
+
   createFormUpdateCustomer() {
     console.log(this.customer.birthDate);
     let bDate = new Date();
@@ -55,28 +54,17 @@ export class UpdateCustomerComponent implements OnInit {
       ],
     });
   }
-  checkInvalid() {
-    if (this.updateCustomerForm.invalid) {
-      this.isShow = true;
-      return;
+  onDateChange(event: any) {
+    let date = new Date(event.target.value);
+    if (date.getFullYear() > this.today.getFullYear()) {
+      this.updateCustomerForm.get('birthDate')?.setValue('');
+      this.futureDate = true
     }
-    let date = new Date(this.updateCustomerForm.get('birthDate')?.value);
-    let age = this.today.getFullYear() - date.getFullYear();
-    if (age < 18) {
-      this.under18 = true;
-      return;
-    } else {
-      this.under18 = false;
-    }
-    if (
-      this.updateCustomerForm.value.nationalityId ===
-      this.customer.nationalityId
-    ) {
-      this.updateCustomer();
-    } else {
-      this.checkTcNum(this.updateCustomerForm.value.nationalityId);
+    else {
+      this.futureDate = false;
     }
   }
+
   getCustomerById() {
     this.activatedRoute.params.subscribe((params) => {
       if (params['id']) this.selectedCustomerId = params['id'];
@@ -93,16 +81,17 @@ export class UpdateCustomerComponent implements OnInit {
     }
   }
 
+
+
   updateCustomer() {
-    if (this.updateCustomerForm.invalid) {
-      this.isShow = true;
-    } else {
-      this.isShow = false;
-      const customer: Customer = Object.assign(
-        { id: this.customer.id },
-        this.updateCustomerForm.value
-      );
-      this.customerService.updateInfo(customer, this.customer).subscribe(() => {
+    this.isShow = false;
+    const customer: Customer = Object.assign(
+      { id: this.customer.id },
+      this.updateCustomerForm.value
+    );
+    this.customerService
+      .updateDemographicInfo(customer, this.customer)
+      .subscribe(() => {
         this.router.navigateByUrl(
           `/dashboard/customers/customer-info/${customer.id}`
         );
@@ -113,7 +102,33 @@ export class UpdateCustomerComponent implements OnInit {
           key: 'etiya-custom',
         });
       });
+  }
+  checkInvalid() {
+    if (this.updateCustomerForm.invalid) {
+      this.isShow = true;
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Enter required fields',
+        key: 'etiya-custom',
+      });
+      return;
     }
+    // let date = new Date(this.updateCustomerForm.get('birthDate')?.value);
+    // let age = this.today.getFullYear() - date.getFullYear();
+    // if (age < 18) {
+    //   this.under18 = true;
+    //   return;
+    // } else {
+    //   this.under18 = false;
+    // }
+
+    if (
+      this.updateCustomerForm.value.nationalityId ===
+      this.customer.nationalityId
+    )
+      this.updateCustomer();
+    else this.checkTcNum(this.updateCustomerForm.value.nationalityId);
   }
 
   checkTcNum(id: number) {
@@ -122,18 +137,18 @@ export class UpdateCustomerComponent implements OnInit {
         return item.nationalityId == id;
       });
       if (matchCustomer) {
-        this.nationalityId = true;
-      } else {
-        this.updateCustomer();
-        this.nationalityId = false;
-      }
+        this.messageService.add({
+          detail: 'A customer is already exist with this Nationality ID',
+          key: 'etiya-custom',
+        });
+      } else this.updateCustomer();
     });
   }
   update() {
     this.checkInvalid();
   }
 
-  isNumber(event: any): boolean {
+  isValid(event: any): boolean {
     console.log(event);
     const pattern = /[0-9]/;
     const char = String.fromCharCode(event.which ? event.which : event.keyCode);
@@ -141,19 +156,5 @@ export class UpdateCustomerComponent implements OnInit {
 
     event.preventDefault();
     return false;
-  }
-
-  previousPage(){
-    this.router.navigateByUrl(`/dashboard/customers/customer-info/${this.selectedCustomerId}`)
-
-  }
-  onDateChange(event: any) {
-    let date = new Date(event.target.value);
-    if (date.getFullYear() > this.today.getFullYear()) {
-      this.updateCustomerForm.get('birthDate')?.setValue('');
-      this.futureDate = true;
-    } else {
-      this.futureDate = false;
-    }
   }
 }
